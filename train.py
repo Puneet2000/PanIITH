@@ -46,30 +46,31 @@ class PanIITDataset(Dataset):
 transform = transforms.Compose([
 								transforms.ToTensor(),
 								transforms.ToPILImage(),
-                                transforms.ColorJitter(),
-								transforms.RandomRotation(60, resample=False, expand=False, center=None),
+                                #\transforms.ColorJitter(),
+								transforms.RandomRotation(30, resample=False, expand=False, center=None),
 								transforms.RandomHorizontalFlip(),
 								transforms.RandomVerticalFlip(),
 								transforms.ToTensor()
 								])
 
-test_transform = transforms.Compose([
-                                transforms.ToTensor(),
-                                transforms.ToPILImage(),
-                                transforms.ColorJitter(),
-                                transforms.RandomRotation(60, resample=False, expand=False, center=None),
-                                transforms.RandomHorizontalFlip(),
-                                transforms.RandomVerticalFlip(),
-                                transforms.ToTensor()
-                                ])
+# test_transform = transforms.Compose([
+#                                 transforms.ToTensor(),
+#                                 transforms.ToPILImage(),
+#                                 transforms.ColorJitter(),
+#                                 transforms.RandomRotation(60, resample=False, expand=False, center=None),
+#                                 transforms.RandomHorizontalFlip(),
+#                                 transforms.RandomVerticalFlip(),
+#                                 transforms.ToTensor()
+#                                 ])
+
 transform2 = transforms.Compose([transforms.ToTensor()])
 
 trainset = PanIITDataset(csv_file='./solution.csv',root_dir='./training',transform = transform)
 submissionset = PanIITDataset(csv_file='./sample.csv',root_dir='./testing',transform = transform2)
 
-train_dataset, test_dataset = torch.utils.data.random_split(trainset, [4000, 1000])
-trainloader = DataLoader(dataset=train_dataset, batch_size=64,shuffle=True, num_workers=4)
-testloader = DataLoader(dataset=test_dataset, batch_size=64,shuffle=False, num_workers=4)
+train_dataset, test_dataset = torch.utils.data.random_split(trainset, [1, 4999])
+trainloader = DataLoader(dataset=train_dataset, batch_size=128,shuffle=True, num_workers=4)
+testloader = DataLoader(dataset=test_dataset, batch_size=128,shuffle=False, num_workers=4)
 submissionloader = DataLoader(dataset=submissionset, batch_size=2,shuffle=False, num_workers=0)
 
 model = models.alexnet(True)
@@ -82,12 +83,12 @@ model.classifier  = nn.Sequential(
             nn.ReLU(inplace=True),
             nn.Linear(4096, 6),
 )
-model = torch.load('./alexnet.pt')
+model = torch.load('./alexnet_5.pt')
 model = model.cuda()
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.SGD(model.parameters(),lr=0.001,momentum=0.9)
 
-for epoch in range(0):
+for epoch in range(40):
 	ave_loss=[]
 	for i,(inputs,labels)in enumerate(trainloader):
 		inputs,labels = inputs.cuda(),labels.cuda()
@@ -98,10 +99,10 @@ for epoch in range(0):
 		optimizer.step()
 		ave_loss.append(loss.item())
 		if i%50==49:  
-			torch.save(model,'./alexnet.pt')
+			torch.save(model,'./alexnet_5.pt')
 	print('epoch {0} , loss {1}'.format(epoch+1,np.mean(ave_loss)))
 
-"""
+
 correct=0
 total=0
 with torch.no_grad():
@@ -116,15 +117,16 @@ with torch.no_grad():
 print('Accuracy of the network on the  test images: %0.6f %%' % (
     100 * correct / total))
 
-"""
-i=1
-with torch.no_grad():
-    for data in submissionloader:
-        inputs,labels= data
-        inputs = inputs.cuda()
-        labels = labels.cuda()
-        outputs =model(inputs)
-        _,predicted=torch.max(outputs.data,1)
-        print(str(i)+','+str(int(predicted[0]+1)))
-        print(str(i+1)+','+str(int(predicted[1]+1)))
-        i=i+2
+
+# i=1
+# with torch.no_grad():
+#     print('id,category')
+#     for data in submissionloader:
+#         inputs,labels= data
+#         inputs = inputs.cuda()
+#         labels = labels.cuda()
+#         outputs =model(inputs)
+#         _,predicted=torch.max(outputs.data,1)
+#         print(str(i)+','+str(int(predicted[0]+1)))
+#         print(str(i+1)+','+str(int(predicted[1]+1)))
+#         i=i+2
