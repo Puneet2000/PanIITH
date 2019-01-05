@@ -14,6 +14,8 @@ import torch.nn.functional as F
 from torch.autograd import Variable
 import torchvision.models as models
 
+
+
 class PanIITDataset(Dataset):
 
     def __init__(self, csv_file, root_dir, transform=None,dim=224,grayscale=False):
@@ -44,12 +46,22 @@ class PanIITDataset(Dataset):
 transform = transforms.Compose([
 								transforms.ToTensor(),
 								transforms.ToPILImage(),
+                                transforms.ColorJitter(),
 								transforms.RandomRotation(60, resample=False, expand=False, center=None),
 								transforms.RandomHorizontalFlip(),
 								transforms.RandomVerticalFlip(),
 								transforms.ToTensor()
 								])
 
+test_transform = transforms.Compose([
+                                transforms.ToTensor(),
+                                transforms.ToPILImage(),
+                                transforms.ColorJitter(),
+                                transforms.RandomRotation(60, resample=False, expand=False, center=None),
+                                transforms.RandomHorizontalFlip(),
+                                transforms.RandomVerticalFlip(),
+                                transforms.ToTensor()
+                                ])
 transform2 = transforms.Compose([transforms.ToTensor()])
 
 trainset = PanIITDataset(csv_file='./solution.csv',root_dir='./training',transform = transform)

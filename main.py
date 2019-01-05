@@ -8,20 +8,20 @@ import torch
 import matplotlib.pyplot as plt
 from sklearn.manifold import TSNE
 
-# image_file = pd.read_csv('./data/solution.csv')
-# image_ids = image_file['ids']
-# num_images = len(image_ids)
+image_file = pd.read_csv('./data/solution.csv')
+image_ids = image_file['ids']
+num_images = len(image_ids)
 
-# all_grayscale_images = []
-# for i in range(num_images):
-# 	img = Image.open('./data/train_data/' + str(image_ids[i]) + '.png').convert('L')
-# 	img = img.resize((128, 128), Image.ANTIALIAS)
-# 	data = np.array(img).flatten()
-# 	all_grayscale_images.append(data)
+all_grayscale_images = []
+for i in range(num_images):
+	img = Image.open('./data/train_data/' + str(image_ids[i]) + '.png').convert('L')
+	img = img.resize((128, 128), Image.ANTIALIAS)
+	data = np.array(img).flatten()
+	all_grayscale_images.append(data)
 
-# all_grayscale_images = np.array(all_grayscale_images)
+all_grayscale_images = np.array(all_grayscale_images)
 
-# np.save('./data/train_images_numpy', all_grayscale_images)
+np.save('./data/train_images_numpy', all_grayscale_images)
 
 all_grayscale_images = np.load('./data/train_images_numpy.npy')
 
