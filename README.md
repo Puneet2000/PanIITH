@@ -1,1 +1,2 @@
-# PanIITH
+## PAN-IIT Hackathon
+This Hackathon was organised by PAN IIT Association in which teams from different IIT's participate to solve a Machine learning challange in 2 days of time. Among total 1000 teams our team rank was 15 with submission accuracy of 99.47% . The problem was a classification  task and we applied Transfer learning on pretrained-models like AlexNet and VGG13_BN with Data augmentation. 
